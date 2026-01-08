@@ -31,6 +31,7 @@ export default function DashboardPage() {
   const [activeView, setActiveView] = useState<ActiveView>("all");
   const [showChatWidget, setShowChatWidget] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   const quickAddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function DashboardPage() {
       setUserName(session.data.user.name || "User");
       setUserEmail(session.data.user.email || "");
       setUserId(session.data.user.id || "");
+      setToken(session.data.session.token || "");
 
       const fetchedTasks = await listTasks();
       setTasks(fetchedTasks);
@@ -432,7 +434,7 @@ export default function DashboardPage() {
         {/* Chat Widget - Desktop Side Panel */}
         {showChatWidget && userId && (
           <div className="hidden lg:flex flex-col w-96 bg-white border-l border-gray-200 shadow-lg">
-            <ChatWidget userId={userId} />
+            <ChatWidget userId={userId} token={token} />
           </div>
         )}
       </div>
@@ -454,7 +456,7 @@ export default function DashboardPage() {
 
             {/* Modal Content */}
             <div className="flex-1 overflow-hidden">
-              <ChatWidget userId={userId} />
+              <ChatWidget userId={userId} token={token} />
             </div>
           </div>
         </div>

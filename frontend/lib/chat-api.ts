@@ -36,9 +36,11 @@ interface ChatResponse {
 export class ChatAPIClient {
   private baseUrl: string;
   private userId: string;
+  private token: string | null = null;
 
-  constructor(userId: string, baseUrl: string = "/api") {
+  constructor(userId: string, token: string | null = null, baseUrl: string = "/api") {
     this.userId = userId;
+    this.token = token;
     this.baseUrl = baseUrl;
   }
 
@@ -97,10 +99,12 @@ export class ChatAPIClient {
   }
 
   /**
-   * Get auth token from session storage
+   * Get auth token from session storage or internal state
    * Token is stored by Better Auth
    */
   private getAuthToken(): string | null {
+    if (this.token) return this.token;
+
     try {
       // Better Auth stores session in sessionStorage
       const sessionKey = "better-auth.session_token";

@@ -9,6 +9,7 @@ import { InputField } from "./InputField";
 
 interface ChatWidgetProps {
   userId: string;
+  token?: string | null;
   initialConversationId?: string;
   onConversationStart?: (id: string) => void;
   onMessageSent?: (message: string) => void;
@@ -17,6 +18,7 @@ interface ChatWidgetProps {
 
 export function ChatWidget({
   userId,
+  token,
   initialConversationId,
   onConversationStart,
   onMessageSent,
@@ -34,6 +36,7 @@ export function ChatWidget({
     isReady,
   } = useChat({
     userId,
+    token,
     initialConversationId,
     onConversationStart,
     onMessageSent,

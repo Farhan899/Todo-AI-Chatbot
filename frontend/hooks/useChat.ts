@@ -14,6 +14,7 @@ import { ChatAPIClient, ChatMessage, ToolCall } from "@/lib/chat-api";
 
 interface UseChatOptions {
   userId: string;
+  token?: string | null;
   initialConversationId?: string;
   onConversationStart?: (id: string) => void;
   onMessageSent?: (message: string) => void;
@@ -42,6 +43,7 @@ interface UseChatReturn {
 export function useChat(options: UseChatOptions): UseChatReturn {
   const {
     userId,
+    token,
     initialConversationId,
     onConversationStart,
     onMessageSent,
@@ -58,8 +60,13 @@ export function useChat(options: UseChatOptions): UseChatReturn {
   const [inputValue, setInputValue] = useState("");
 
   // Refs
-  const clientRef = useRef<ChatAPIClient>(new ChatAPIClient(userId, apiBaseUrl));
+  const clientRef = useRef<ChatAPIClient>(new ChatAPIClient(userId, token || null, apiBaseUrl));
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Update apiClient when userId, token or apiBaseUrl changes
+  useEffect(() => {
+    clientRef.current = new ChatAPIClient(userId, token || null, apiBaseUrl);
+  }, [userId, token, apiBaseUrl]);
 
   // Derived state
   const isEmpty = messages.length === 0;
