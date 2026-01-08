@@ -1,4 +1,4 @@
 from app.main import app
 
-# The FastAPI app instance is imported from app.main and available as 'app'
-# This satisfies Vercel's requirement to find the FastAPI application
+# The FastAPI application instance named 'app' is required for Vercel
+# This ensures Vercel can find and serve the FastAPI application
