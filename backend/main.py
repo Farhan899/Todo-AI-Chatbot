@@ -1,4 +1,5 @@
+import asyncio
 from app.main import app
 
-# The FastAPI application instance named 'app' is required for Vercel
-# This ensures Vercel can find and serve the FastAPI application
+# Make sure the FastAPI app instance is available as 'app' for Vercel
+# This satisfies Vercel's requirement to find the FastAPI application
