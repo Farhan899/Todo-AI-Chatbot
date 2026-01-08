@@ -2,7 +2,6 @@
 
 "use client";
 
-import React from "react";
 import { useChat } from "@/hooks/useChat";
 import { MessageList } from "./MessageList";
 import { InputField } from "./InputField";
@@ -59,26 +58,31 @@ export function ChatWidget({
 
   return (
     <div
-      className={`flex flex-col h-full bg-white rounded-lg shadow-lg overflow-hidden ${className}`}
+      className={`flex flex-col h-full bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 ${className}`}
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 text-white">
-        <h2 className="font-semibold">Task Chat Assistant</h2>
-        <p className="text-xs opacity-90">
-          {conversationId ? `Chat ID: ${conversationId.substring(0, 8)}...` : "New conversation"}
-        </p>
+      <div className="bg-white border-b border-gray-100 px-5 py-4 flex items-center justify-between sticky top-0 z-10">
+        <div>
+          <h2 className="font-semibold text-gray-900 leading-tight">Assistant</h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            {conversationId ? `Active` : "Ready to help"}
+          </p>
+        </div>
+        <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
       </div>
 
       {/* Error Alert */}
       {error && (
-        <div className="mx-4 mt-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-start justify-between">
-          <div>
-            <p className="font-semibold text-sm">Error</p>
-            <p className="text-sm">{error}</p>
+        <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-100 text-red-600 rounded-lg flex items-start justify-between text-sm animate-fade-in">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p>{error}</p>
           </div>
           <button
             onClick={clearError}
-            className="text-red-700 hover:text-red-900 ml-2"
+            className="text-red-400 hover:text-red-700 transition-colors"
           >
             ✕
           </button>
@@ -94,7 +98,7 @@ export function ChatWidget({
         onChange={setInputValue}
         onSend={handleSend}
         disabled={loading}
-        placeholder="Type a message... (Ctrl+Enter to send)"
+        placeholder="Type a message..."
       />
     </div>
   );

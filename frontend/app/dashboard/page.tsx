@@ -431,36 +431,35 @@ export default function DashboardPage() {
           )}
         </main>
 
-        {/* Chat Widget - Desktop Side Panel */}
-        {showChatWidget && userId && (
-          <div className="hidden lg:flex flex-col w-96 bg-white border-l border-gray-200 shadow-lg">
-            <ChatWidget userId={userId} token={token} />
-          </div>
-        )}
       </div>
 
-      {/* Chat Widget Modal - Mobile */}
-      {showChatWidget && userId && (
-        <div className="fixed inset-0 lg:hidden bg-black bg-opacity-50 z-50 flex flex-col">
-          <div className="flex-1 bg-white rounded-t-2xl overflow-hidden flex flex-col">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h2 className="font-semibold text-gray-800">Chat Assistant</h2>
-              <button
+      {/* Chat Widget - Bottom Right Corner */}
+      {userId && (
+        <div className={`fixed bottom-4 right-4 z-40 transition-all duration-300 ease-in-out ${showChatWidget ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+          <div className="w-[380px] h-[600px] flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+             <ChatWidget userId={userId} token={token} className="h-full" />
+             <button
                 onClick={() => setShowChatWidget(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="flex-1 overflow-hidden">
-              <ChatWidget userId={userId} token={token} />
-            </div>
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-50 p-1 bg-white/50 rounded-full"
+                title="Close Chat"
+             >
+               <X size={16} />
+             </button>
           </div>
         </div>
       )}
+
+       {/* Minimized / Toggle Button (Always visible FAB) */}
+       {!showChatWidget && userId && (
+        <button
+          onClick={() => setShowChatWidget(true)}
+          className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center justify-center group"
+          title="Open Chat Assistant"
+        >
+          <MessageCircle size={28} className="group-hover:animate-pulse" />
+        </button>
+      )}
+
     </div>
   );
 }
