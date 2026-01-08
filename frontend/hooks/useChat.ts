@@ -142,7 +142,7 @@ export function useChat(options: UseChatOptions): UseChatReturn {
 
         // Add assistant message
         const assistantMessage: ChatMessage = {
-          id: response.conversation_id,
+          id: `assistant-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
           sender: "assistant",
           content: response.assistant_message,
           toolCalls: response.tool_calls.length > 0 ? response.tool_calls : undefined,
