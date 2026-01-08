@@ -1,4 +1,3 @@
-from app.main import app as application
+from app.main import app
 
-# Vercel requires the FastAPI app instance to be named 'app'
-app = application
+vercel_app = app
