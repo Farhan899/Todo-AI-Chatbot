@@ -18,6 +18,7 @@ interface UseChatOptions {
   initialConversationId?: string;
   onConversationStart?: (id: string) => void;
   onMessageSent?: (message: string) => void;
+  onRefreshTasks?: () => void;
   apiBaseUrl?: string;
 }
 
@@ -49,6 +50,7 @@ export function useChat(options: UseChatOptions): UseChatReturn {
     initialConversationId,
     onConversationStart,
     onMessageSent,
+    onRefreshTasks,
     apiBaseUrl = API_URL,
   } = options;
 
@@ -64,6 +66,12 @@ export function useChat(options: UseChatOptions): UseChatReturn {
   // Refs
   const clientRef = useRef<ChatAPIClient>(new ChatAPIClient(userId, token || null, apiBaseUrl));
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const onRefreshTasksRef = useRef<((...args: any[]) => any) | undefined>(onRefreshTasks);
+
+  // Update refs when dependencies change
+  useEffect(() => {
+    onRefreshTasksRef.current = onRefreshTasks;
+  }, [onRefreshTasks]);
 
   // Update apiClient when userId, token or apiBaseUrl changes
   useEffect(() => {
@@ -151,6 +159,13 @@ export function useChat(options: UseChatOptions): UseChatReturn {
 
         setMessages((prev) => [...prev, assistantMessage]);
 
+        // If tool calls were executed, trigger refresh callback
+        if (response.tool_calls && response.tool_calls.length > 0) {
+          if (onRefreshTasksRef.current) {
+            onRefreshTasksRef.current();
+          }
+        }
+
         // Limit message history to last 100 messages (memory efficiency)
         setMessages((prev) => {
           if (prev.length > 100) {
@@ -171,7 +186,7 @@ export function useChat(options: UseChatOptions): UseChatReturn {
         setLoading(false);
       }
     },
-    [conversationId, isReady, onConversationStart, onMessageSent]
+    [conversationId, isReady, onConversationStart, onMessageSent, onRefreshTasksRef]
   );
 
   // Clear error

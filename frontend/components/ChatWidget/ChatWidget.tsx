@@ -12,6 +12,7 @@ interface ChatWidgetProps {
   initialConversationId?: string;
   onConversationStart?: (id: string) => void;
   onMessageSent?: (message: string) => void;
+  onRefreshTasks?: () => void;
   className?: string;
 }
 
@@ -21,6 +22,7 @@ export function ChatWidget({
   initialConversationId,
   onConversationStart,
   onMessageSent,
+  onRefreshTasks,
   className = "",
 }: ChatWidgetProps) {
   const {
@@ -39,6 +41,7 @@ export function ChatWidget({
     initialConversationId,
     onConversationStart,
     onMessageSent,
+    onRefreshTasks,
   });
 
   const handleSend = async () => {

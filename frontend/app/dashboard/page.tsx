@@ -74,6 +74,15 @@ export default function DashboardPage() {
     }
   }
 
+  async function refreshTasks() {
+    try {
+      const fetchedTasks = await listTasks();
+      setTasks(fetchedTasks);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to refresh tasks");
+    }
+  }
+
   async function handleLogout() {
     await authClient.signOut();
     toast.success("Logged out successfully");
@@ -437,7 +446,7 @@ export default function DashboardPage() {
       {userId && (
         <div className={`fixed bottom-4 right-4 z-40 transition-all duration-300 ease-in-out ${showChatWidget ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
           <div className="w-[380px] h-[600px] flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
-             <ChatWidget userId={userId} token={token} className="h-full" />
+             <ChatWidget userId={userId} token={token} onRefreshTasks={refreshTasks} className="h-full" />
              <button
                 onClick={() => setShowChatWidget(false)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-50 p-1 bg-white/50 rounded-full"
@@ -459,7 +468,6 @@ export default function DashboardPage() {
           <MessageCircle size={28} className="group-hover:animate-pulse" />
         </button>
       )}
-
     </div>
   );
 }
