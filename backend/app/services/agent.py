@@ -319,7 +319,7 @@ class AgentService:
             if not tasks:
                 return "You don't have any tasks yet."
             task_list = "\n".join(
-                [f"- {t.get('title')} {'✓' if t.get('is_completed') else ''}" for t in tasks]
+                [f"- [{t.get('id')}] {t.get('title')} {'✓' if t.get('is_completed') else ''}" for t in tasks]
             )
             return f"Here are your tasks:\n{task_list}"
 

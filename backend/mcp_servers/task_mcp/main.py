@@ -315,31 +315,67 @@ class TaskMCPServer:
     async def delete_task(self, args: dict) -> dict:
         """Delete a task"""
         user_id = args.get("user_id")
-        task_id = args.get("task_id")
+        task_id_str = args.get("task_id")
+
+        # Debug logging
+        import logging
+        logger = logging.getLogger(__name__)
+
+        logger.info(f"Attempting to delete task - user_id: {user_id}, task_id_str: {task_id_str}")
+
+        if not user_id:
+            logger.warning("Missing user_id parameter in delete_task")
+            return {"error": "Missing user_id parameter", "code": 400}
+
+        if not task_id_str:
+            logger.warning("Missing task_id parameter in delete_task")
+            return {"error": "Missing task_id parameter", "code": 400}
 
         await self.initialize_db()
         async with SQLAlchemyAsyncSession(self.engine) as session:
             try:
+                # Convert task_id to integer with proper error handling
+                try:
+                    task_id = int(task_id_str)
+                    logger.info(f"Successfully converted task_id to integer: {task_id}")
+                except (ValueError, TypeError):
+                    logger.error(f"Could not convert task_id to integer: {task_id_str}")
+                    return {"error": "Invalid task ID format", "code": 400}
+
                 query = select(Task).where(
-                    (Task.id == int(task_id)) & (Task.user_id == user_id)
+                    (Task.id == task_id) & (Task.user_id == user_id)
                 )
+
+                logger.info(f"Executing query to find task with id={task_id} and user_id={user_id}")
+
                 result = await session.execute(query)
                 task = result.scalar_one_or_none()
 
                 if not task:
-                    return {"error": "Task not found", "code": 404}
+                    logger.warning(f"Task not found - id: {task_id}, user_id: {user_id}")
+                    return {
+                        "error": f"Task with ID {task_id} not found or you don't have permission to delete it",
+                        "code": 404
+                    }
+
+                logger.info(f"Task found for deletion: {task.id} - {task.title}")
 
                 await session.delete(task)
                 await session.commit()
+
+                logger.info(f"Task successfully deleted: {task.id}")
 
                 return {
                     "success": True,
                     "message": "Task deleted successfully",
                     "task_id": task_id,
+                    "id": task_id  # Include 'id' field to match what the response generator expects
                 }
             except ValueError:
+                logger.error("ValueError occurred during delete_task")
                 return {"error": "Invalid task ID format", "code": 400}
             except Exception as e:
+                logger.error(f"Unexpected error in delete_task: {str(e)}")
                 return {"error": f"Failed to delete task: {str(e)}", "code": 500}
 
     async def complete_task(self, args: dict) -> dict:
