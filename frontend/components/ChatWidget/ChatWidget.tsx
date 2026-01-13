@@ -31,6 +31,7 @@ export function ChatWidget({
     loading,
     error,
     inputValue,
+    messagesEndRef,
     setInputValue,
     sendMessage,
     clearError,
@@ -93,7 +94,7 @@ export function ChatWidget({
       )}
 
       {/* Message List */}
-      <MessageList messages={messages} loading={loading} />
+      <MessageList ref={messagesEndRef} messages={messages} loading={loading} />
 
       {/* Input Field */}
       <InputField

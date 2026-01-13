@@ -30,6 +30,9 @@ interface UseChatReturn {
   error?: string;
   inputValue: string;
 
+  // Refs
+  messagesEndRef: React.RefObject<HTMLDivElement>;
+
   // Actions
   setInputValue: (value: string) => void;
   sendMessage: (message: string) => Promise<void>;
@@ -84,13 +87,14 @@ export function useChat(options: UseChatOptions): UseChatReturn {
 
   // Auto-scroll to latest message
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      // Scroll to bottom of the container
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
-      scrollToBottom();
-    }
+    scrollToBottom();
   }, [messages, scrollToBottom]);
 
   // Load initial conversation if provided
@@ -208,6 +212,7 @@ export function useChat(options: UseChatOptions): UseChatReturn {
     loading,
     error,
     inputValue,
+    messagesEndRef,  // Add the ref to the return object
     setInputValue,
     sendMessage,
     clearError,

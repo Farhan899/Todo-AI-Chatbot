@@ -1,6 +1,6 @@
 // Message List Component - Displays conversation history
 
-import React from "react";
+import React, { forwardRef } from "react";
 import { ChatMessage, ToolCall } from "@/hooks/useChat";
 
 interface MessageListProps {
@@ -8,9 +8,14 @@ interface MessageListProps {
   loading: boolean;
 }
 
-export function MessageList({ messages, loading }: MessageListProps) {
+const ScrollAnchor = forwardRef<HTMLDivElement>((_, ref) => {
+  return <div className="h-1" ref={ref} />; // Scroll anchor element
+});
+ScrollAnchor.displayName = 'ScrollAnchor';
+
+export const MessageList = forwardRef<HTMLDivElement, MessageListProps>(({ messages, loading }, ref) => {
   return (
-    <div className="flex-1 overflow-y-auto p-5 space-y-6">
+    <div className="flex-1 overflow-y-auto p-5 space-y-6" ref={ref}>
       {messages.length === 0 && !loading && (
         <div className="flex items-center justify-center h-full text-center">
           <div className="max-w-xs space-y-3 animate-fade-in">
@@ -84,7 +89,9 @@ export function MessageList({ messages, loading }: MessageListProps) {
         </div>
       )}
 
-      <div className="h-1" /> {/* Scroll anchor */}
+      <ScrollAnchor />
     </div>
   );
-}
+});
+
+MessageList.displayName = 'MessageList';
