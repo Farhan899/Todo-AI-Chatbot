@@ -31,7 +31,7 @@ interface UseChatReturn {
   inputValue: string;
 
   // Refs
-  messagesEndRef: React.RefObject<HTMLDivElement>;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
 
   // Actions
   setInputValue: (value: string) => void;
